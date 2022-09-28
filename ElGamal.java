@@ -56,7 +56,7 @@ public class ElGamal{
         //m = c2 * x^-1 mod p -> c2 * s^(p-2) mod p
         //BigInteger m = c2.multiply(s.modPow(new BigInteger("-1"), p));
 
-        BigInteger s = c1.modPow(x, p); //sk should be h
+        BigInteger s = c1.modPow(x, p); //sk should be x
         BigInteger i = s.modInverse(p);
         BigInteger m = i.multiply(c2).mod(p);
         System.out.printf("x (secret key): %s\n", x);
