@@ -12,6 +12,7 @@ import java.util.Random;
 
 public class ElGamal{
 
+    static BigInteger x;    
 
     /**Encryption:
     @param m: message to be encrypted
@@ -24,16 +25,17 @@ public class ElGamal{
 
         // calc: h = g^random mod p
         Random rand = new Random();
-        BigInteger x = new BigInteger(String.format("%s", rand.nextInt(6661) + 1)) ; //random for key generation
-        System.out.printf("secret key is %s\n",x);
+        x = new BigInteger(String.format("%s", rand.nextInt(6661) + 1)) ; //random for key generation
+        System.out.printf("x (secret key): %s\n",x);
         
         //Private Key ?
         BigInteger h = g.modPow(x, p);
-        System.out.println("h is :" + h);
+        System.out.println("h: " + h);
         BigInteger r = new BigInteger(String.format("%s", rand.nextInt(6661) + 1)) ;//random for encryption
-        System.out.println("R is equal to :" + r);
+        System.out.println("r: " + r);
         BigInteger c1 = g.modPow(r,p);
-        BigInteger c2 = h.pow(r.intValue()).multiply(m).mod(p);
+        //BigInteger c2 = h.pow(r.intValue()).multiply(m).mod(p);
+        BigInteger c2 = m.multiply(h.modPow(r, p)).mod(p);
         BigInteger[] encrypted = {c1,c2};
         
         return encrypted;
@@ -47,16 +49,20 @@ public class ElGamal{
 
         //BigInteger m = c2.divide(c1.pow(sk.intValue())).mod(new BigInteger("6661"));
 
-        //System.out.printf("Message %d \n", m);
-
-       //Base and Prime number
+        //Base and Prime number
         BigInteger g = new BigInteger("666");
         BigInteger p = new BigInteger("6661");
      
         //m = c2 * x^-1 mod p -> c2 * s^(p-2) mod p
-        BigInteger s = c1.modPow(sk, p);
-        System.out.println("S: " + s);
-        BigInteger m = c2.multiply(s.modPow(new BigInteger("-1"), p));
+        //BigInteger m = c2.multiply(s.modPow(new BigInteger("-1"), p));
+
+        BigInteger s = c1.modPow(x, p); //sk should be h
+        BigInteger i = s.modInverse(p);
+        BigInteger m = i.multiply(c2).mod(p);
+        System.out.printf("x (secret key): %s\n", x);
+        System.out.printf("s: %s\n", s);
+        System.out.printf("i: %s\n", i);
+        System.out.printf("m: %s\n", m);
 
         
         return m;

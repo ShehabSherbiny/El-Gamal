@@ -19,7 +19,7 @@ public class main{
         System.out.printf("Private key found through interception: %s\n", bobSK);
 
         //Decrypt
-        System.out.printf("sk: %s; c1: %s; c2: %s\n", bobSK, encryptMsg[0], encryptMsg[1]);
+        System.out.printf("sk: %s \nc1: %s \nc2: %s\n", bobSK, encryptMsg[0], encryptMsg[1]);
         System.out.printf("Message found through decryption: %s\n", elG.decrypt(bobSK, encryptMsg[0], encryptMsg[1]));
 
     } 
