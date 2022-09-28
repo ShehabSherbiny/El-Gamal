@@ -1,6 +1,5 @@
 import java.math.BigInteger;
 import java.util.Random;
-import java.util.random.*;
 
 // The shared base g=666
 // The shared prime p=6661
@@ -26,10 +25,11 @@ public class ElGamal{
         // calc: h = g^random mod p
         Random rand = new Random();
         BigInteger x = new BigInteger(String.format("%s", rand.nextInt(6661) + 1)) ; //random for key generation
-
+        System.out.printf("secret key is %s\n",x);
+        
         //Private Key ?
         BigInteger h = g.modPow(x, p);
-        
+        System.out.println("h is :" + h);
         BigInteger r = new BigInteger(String.format("%s", rand.nextInt(6661) + 1)) ; //random for encryption
         BigInteger c1 = g.modPow(r, p);
         BigInteger c2 = h.pow(r.intValue()).multiply(m).mod(p);
@@ -39,9 +39,9 @@ public class ElGamal{
     } 
 
 
-    /**Dencryption:
-    @param 
-    
+    //Dencryption:
+    //@param 
+    /* 
     public static BigInteger decrypt(BigInteger c1, BigInteger c2){
 
         //Base and Prime number
@@ -61,7 +61,20 @@ public class ElGamal{
         
     }
     */
- 
+    
+    public static BigInteger intercept(BigInteger g, BigInteger p, BigInteger pk){
+        BigInteger secretKey = BigInteger.ZERO;
+        for(BigInteger i = BigInteger.ZERO; i.compareTo(p) < 0 ; i= i.add(BigInteger.ONE)){
+            
+            if (g.modPow(i, p).equals(pk)){
+            System.out.printf("i: %s; g^x mod p: %s; pk:%s; equals %s \n", i, g.modPow(i, p), pk, g.modPow(i, p).equals(pk));
+                secretKey = i;
+                //break;
+            } 
+        }
+        
+        return secretKey;
+    }
 
 }
 
