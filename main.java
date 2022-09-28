@@ -14,7 +14,13 @@ public class main{
         var encryptMsg = elG.encrypt(new BigInteger("2000"));
         System.out.printf("C1: %s \nC2: %s \n", encryptMsg[0], encryptMsg[1]);
         
-        
-        System.out.printf("Private key found through interception: %s\n", elG.intercept(new BigInteger("666"), new BigInteger("6661"), new BigInteger("2227")));
+        //Intercept:
+        var bobSK = elG.intercept(new BigInteger("666"), new BigInteger("6661"), new BigInteger("2227")); 
+        System.out.printf("Private key found through interception: %s\n", bobSK);
+
+        //Decrypt
+        System.out.printf("sk: %s; c1: %s; c2: %s\n", bobSK, encryptMsg[0], encryptMsg[1]);
+        System.out.printf("Message found through decryption: %s\n", elG.decrypt(bobSK, encryptMsg[0], encryptMsg[1]));
+
     } 
 }

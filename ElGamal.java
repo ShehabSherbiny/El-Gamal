@@ -30,8 +30,9 @@ public class ElGamal{
         //Private Key ?
         BigInteger h = g.modPow(x, p);
         System.out.println("h is :" + h);
-        BigInteger r = new BigInteger(String.format("%s", rand.nextInt(6661) + 1)) ; //random for encryption
-        BigInteger c1 = g.modPow(r, p);
+        BigInteger r = new BigInteger(String.format("%s", rand.nextInt(6661) + 1)) ;//random for encryption
+        System.out.println("R is equal to :" + r);
+        BigInteger c1 = g.modPow(r,p);
         BigInteger c2 = h.pow(r.intValue()).multiply(m).mod(p);
         BigInteger[] encrypted = {c1,c2};
         
@@ -41,35 +42,35 @@ public class ElGamal{
 
     //Dencryption:
     //@param 
-    /* 
-    public static BigInteger decrypt(BigInteger c1, BigInteger c2){
+    
+    public static BigInteger decrypt(BigInteger sk, BigInteger c1, BigInteger c2){
 
-        //Base and Prime number
+        //BigInteger m = c2.divide(c1.pow(sk.intValue())).mod(new BigInteger("6661"));
+
+        //System.out.printf("Message %d \n", m);
+
+       //Base and Prime number
         BigInteger g = new BigInteger("666");
         BigInteger p = new BigInteger("6661");
-
-        //PrivateKey ?
-        BigInteger x = g.modPow(pk, p);
-
-        //s = c1^x mod p
-        BigInteger s = c1.modPow(x, p);
-
+     
         //m = c2 * x^-1 mod p -> c2 * s^(p-2) mod p
-        BigInteger m = c2.multiply(s.modPow(p.subtract(new BigInteger("2")), p));
+        BigInteger s = c1.modPow(sk, p);
+        System.out.println("S: " + s);
+        BigInteger m = c2.multiply(s.modPow(new BigInteger("-1"), p));
 
-        return m;
         
+        return m;
     }
-    */
+    
     
     public static BigInteger intercept(BigInteger g, BigInteger p, BigInteger pk){
         BigInteger secretKey = BigInteger.ZERO;
         for(BigInteger i = BigInteger.ZERO; i.compareTo(p) < 0 ; i= i.add(BigInteger.ONE)){
             
             if (g.modPow(i, p).equals(pk)){
-            System.out.printf("i: %s; g^x mod p: %s; pk:%s; equals %s \n", i, g.modPow(i, p), pk, g.modPow(i, p).equals(pk));
+                //System.out.printf("i: %s; g^x mod p: %s; pk:%s; equals %s \n", i, g.modPow(i, p), pk, g.modPow(i, p).equals(pk));
                 secretKey = i;
-                //break;
+                break;
             } 
         }
         
