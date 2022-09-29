@@ -11,31 +11,33 @@ import java.util.Random;
 
 
 public class ElGamal{
+    BigInteger g, p, sk, pk;
 
-    static BigInteger x;    
+    //For Alice
+    public ElGamal(BigInteger g, BigInteger p){
+        this.g = g;
+        this.p = p;
+        sk = createSecretKey();
+        pk = createPublicKey();
+    }
+
+    //For Bob
+    public ElGamal(BigInteger g, BigInteger p, BigInteger sk){
+        this.g = g;
+        this.p = p;
+        this.sk = sk;
+        pk = createPublicKey();
+    }
+
 
     /**Encryption:
     @param m: message to be encrypted
     */
-    public static BigInteger[] encrypt(BigInteger m){
+    public BigInteger[] encrypt(BigInteger m, BigInteger pk){
 
-        //Base and Prime Number
-        BigInteger g = new BigInteger("666");
-        BigInteger p = new BigInteger("6661");
-
-        // calc: h = g^random mod p
-        Random rand = new Random();
-        x = new BigInteger(String.format("%s", rand.nextInt(6661) + 1)) ; //random for key generation
-        System.out.printf("x (secret key): %s\n",x);
-        
-        //Private Key ?
-        BigInteger h = g.modPow(x, p);
-        System.out.println("h: " + h);
-        BigInteger r = new BigInteger(String.format("%s", rand.nextInt(6661) + 1)) ;//random for encryption
-        System.out.println("r: " + r);
-        BigInteger c1 = g.modPow(r,p);
+        BigInteger c1 = g.modPow(sk,p);
         //BigInteger c2 = h.pow(r.intValue()).multiply(m).mod(p);
-        BigInteger c2 = m.multiply(h.modPow(r, p)).mod(p);
+        BigInteger c2 = (m.multiply(pk.pow(sk.intValue()))).mod(p);
         BigInteger[] encrypted = {c1,c2};
         
         return encrypted;
@@ -45,24 +47,20 @@ public class ElGamal{
     //Dencryption:
     //@param 
     
-    public static BigInteger decrypt(BigInteger sk, BigInteger c1, BigInteger c2){
+    public BigInteger decrypt(BigInteger c1, BigInteger c2){
 
-        //BigInteger m = c2.divide(c1.pow(sk.intValue())).mod(new BigInteger("6661"));
-
-        //Base and Prime number
-        BigInteger g = new BigInteger("666");
-        BigInteger p = new BigInteger("6661");
+        //BigInteger m = c2.divide(c1.pow(sk.intValue())).mod(p);
      
         //m = c2 * x^-1 mod p -> c2 * s^(p-2) mod p
-        //BigInteger m = c2.multiply(s.modPow(new BigInteger("-1"), p));
+        BigInteger s = c1.modPow(sk, p);
+        BigInteger m = c2.multiply(s.pow(p.intValue()-2)).mod(p);
 
-        BigInteger s = c1.modPow(x, p); //sk should be x
-        BigInteger i = s.modInverse(p);
-        BigInteger m = i.multiply(c2).mod(p);
-        System.out.printf("x (secret key): %s\n", x);
-        System.out.printf("s: %s\n", s);
-        System.out.printf("i: %s\n", i);
-        System.out.printf("m: %s\n", m);
+        // BigInteger s = c1.modPow(sk, p);
+        // BigInteger i = s.modInverse(p);
+        // BigInteger m = i.multiply(c2);
+        // System.out.printf("s: %s\n", s);
+        // System.out.printf("i: %s\n", i);
+        // System.out.printf("m: %s\n", m);
 
         
         return m;
@@ -83,6 +81,17 @@ public class ElGamal{
         return secretKey;
     }
 
+    private BigInteger createSecretKey(){
+        Random rand = new Random();
+        BigInteger x = new BigInteger(String.format("%s", rand.nextInt(6661) + 1)) ; //random for key generation
+        System.out.printf("x (secret key): %s\n",x);
+
+        return x;
+    }
+
+    private BigInteger createPublicKey(){
+        return g.modPow(sk, p);
+    }
 }
 
 
