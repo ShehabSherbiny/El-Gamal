@@ -32,11 +32,11 @@ public class ElGamal{
 
     /**Encryption:
     @param m: message to be encrypted
+    @param pk: public key
     */
     public BigInteger[] encrypt(BigInteger m, BigInteger pk){
 
         BigInteger c1 = g.modPow(sk,p);
-        //BigInteger c2 = h.pow(r.intValue()).multiply(m).mod(p);
         BigInteger c2 = (m.multiply(pk.pow(sk.intValue()))).mod(p);
         BigInteger[] encrypted = {c1,c2};
         
@@ -48,21 +48,8 @@ public class ElGamal{
     //@param 
     
     public BigInteger decrypt(BigInteger c1, BigInteger c2){
-
-        //BigInteger m = c2.divide(c1.pow(sk.intValue())).mod(p);
-     
-        //m = c2 * x^-1 mod p -> c2 * s^(p-2) mod p
         BigInteger s = c1.modPow(sk, p);
-        BigInteger m = c2.multiply(s.pow(p.intValue()-2)).mod(p);
-
-        // BigInteger s = c1.modPow(sk, p);
-        // BigInteger i = s.modInverse(p);
-        // BigInteger m = i.multiply(c2);
-        // System.out.printf("s: %s\n", s);
-        // System.out.printf("i: %s\n", i);
-        // System.out.printf("m: %s\n", m);
-
-        
+        BigInteger m = c2.multiply(s.pow(p.intValue()-2)).mod(p);    
         return m;
     }
     
@@ -72,7 +59,6 @@ public class ElGamal{
         for(BigInteger i = BigInteger.ZERO; i.compareTo(p) < 0 ; i= i.add(BigInteger.ONE)){
             
             if (g.modPow(i, p).equals(pk)){
-                //System.out.printf("i: %s; g^x mod p: %s; pk:%s; equals %s \n", i, g.modPow(i, p), pk, g.modPow(i, p).equals(pk));
                 secretKey = i;
                 break;
             } 
@@ -84,7 +70,6 @@ public class ElGamal{
     private BigInteger createSecretKey(){
         Random rand = new Random();
         BigInteger x = new BigInteger(String.format("%s", rand.nextInt(6661) + 1)) ; //random for key generation
-        System.out.printf("x (secret key): %s\n",x);
 
         return x;
     }

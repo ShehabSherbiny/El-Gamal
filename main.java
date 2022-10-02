@@ -25,8 +25,9 @@ public class main{
         System.out.printf("sk: %s \nc1: %s \nc2: %s\n", bobSK, encryptMsg[0], encryptMsg[1]);
         System.out.printf("Message found through decryption: %s\n", eve.decrypt(encryptMsg[0], encryptMsg[1]));
 
+        //simply multiply the intercepted message by 3, to change it to 6000
         var mallory = encryptMsg[1].multiply(new BigInteger("3"));
-        System.out.printf("Message found through decryption: %s\n", eve.decrypt(encryptMsg[0], mallory));
+        System.out.printf("Message found through decryption, after Mallory edited the message: %s\n", eve.decrypt(encryptMsg[0], mallory));
 
 
     } 
